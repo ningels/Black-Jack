@@ -2,6 +2,7 @@
 class Card
   attr_accessor  :suit, :face, :value
   #defines two methods, sets a nil instance variable by itself...
+  #set @value to test having total cards of 6 or more and under 21 win
 
   def initialize(suit, face)
     @suit = suit
@@ -12,6 +13,7 @@ class Card
   def determine_value
     face_array = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"]
     array_position = face_array.index(face)
+
     if array_position < 9
       self.value = array_position += 2
     elsif array_position == 12
