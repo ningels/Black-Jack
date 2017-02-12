@@ -16,8 +16,12 @@ class Deck
     cards.shuffle!
   end
 
-  def draw_card
+  def draw
     cards.shift
+  end
+
+  def self.count
+
   end
 
 end

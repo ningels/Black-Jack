@@ -22,4 +22,12 @@ class Card
 #    puts "suit face value #{suit}, #{face}, #{value}"
 #    return self.value
   end
+
+  def ==(another_card)
+    self.suit == another_card.suit && self.face == another_card.face && self.value == another_card.value
+  end
+
+
+
+
 end
