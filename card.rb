@@ -1,5 +1,23 @@
 
 class Card
+
+  def self.suits
+    %w(Heart Club Spade Diamond)
+  end
+
+  def self.faces
+    %w(2 3 4 5 6 7 8 9 10 Jack Queen King Ace)
+  end
+
+  def self.face_cards
+    face_card_array = {
+                        "Jack"  => 10,
+                        "Queen" => 10,
+                        "King" => 10,
+                        "Ace" => 11
+                      }
+  end
+
   attr_accessor  :suit, :face, :value
   #defines two methods, sets a nil instance variable by itself...
   #set @value to test having total cards of 6 or more and under 21 win
@@ -11,25 +29,16 @@ class Card
   end
 
   def determine_value
-    face_array = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"]
-    array_position = face_array.index(face)
-
-    if array_position < 9
-      self.value = array_position += 2
-    elsif array_position == 12
-      self.value = 11
+    if face.to_i.to_s == face
+      self.class.faces.index(face) + 2
     else
-      self.value = 10
+      self.class.face_cards[face]
     end
-#    puts "suit face value #{suit}, #{face}, #{value}"
-#    return self.value
   end
+
 
   def ==(another_card)
     self.suit == another_card.suit && self.face == another_card.face && self.value == another_card.value
   end
-
-
-
 
 end
