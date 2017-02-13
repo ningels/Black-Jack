@@ -71,6 +71,7 @@ class BlackJack
   def determine_winner   #======================================
 
     # tie situation
+
     # From Demetra: I changed the following line using the new bust method I wrote - now the game will know what a bust is! In this case, you probably want to check that they both are NOT busted...but if you are using real life rules that may be different than what I am thinking of. Currently, this will check if they are both busted OR the totals are equal. What ends up happening is a player can bust, and then a dealer can also bust, and then the player and dealer show as 'tied' and the player wins. Game logic probably needs to be ironed out.
     if (bust?(dealer) && bust?(player)) || dealer.total == player.total
        puts " Score tied, player number of cards:  #{player.num_cards} dealer:  #{dealer.num_cards}"
@@ -91,6 +92,12 @@ class BlackJack
       end
     end
   end
+
+  # From Demetra: The way I approached a tie was to check specifically those conditions under which a player wins. If player and dealer hands are the exact same value AND the same length, or if the player has more cards, the player wins. It looks like this:
+
+  # def player_wins_tie?
+  #   total_hand(player_hand) == total_hand(dealer_hand) && player_hand.length >= dealer_hand.length
+  # end
 
   def bust?(hand)
     hand.total > 21
@@ -119,6 +126,8 @@ class BlackJack
     show_dealer_hand
     determine_winner
     another_game?
+
+    # From Demetra: I like the way you have the player's turn complete, and then run the dealer's turn, and then determine the winner. 
 
   end
 
