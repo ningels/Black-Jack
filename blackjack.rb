@@ -4,16 +4,17 @@ require 'tty'
 
 
 class BlackJack
-  attr_accessor :deck, :dealer, :player, :prompt
+  attr_accessor :deck, :dealer, :player, :prompt, :winner
 
-  def initialize
+  def initialize         #======================================
     self.deck = Deck.new
     self.dealer= Hand.new
     self.player = Hand.new
     @prompt = TTY::Prompt.new
+    self.winner = false
   end
 
-  def hit?
+  def hit?               #======================================
     show_hand
     desire = false
     desire = prompt.yes?("Would you like another card?") if player.total <= 21
@@ -23,7 +24,7 @@ class BlackJack
     end
   end
 
-  def show_hand
+  def show_hand          #======================================
     puts "Your hand"
     player.cards.each do |x|
       puts "     #{x.suit} #{x.face} #{x.value}"
@@ -33,7 +34,7 @@ class BlackJack
 
   end
 
-  def dealer_hit?
+  def dealer_hit?        #======================================
     if dealer.total <= 16
       dealer.cards << deck.draw
       dealer_hit?
@@ -41,7 +42,7 @@ class BlackJack
   end
 
 
-  def show_dealer_hand
+  def show_dealer_hand   #======================================
     dealer_hit?
     puts "Dealer's Hand:"
 
@@ -53,45 +54,46 @@ class BlackJack
     puts "Dealer Total: #{dealer.total}"
   end
 
-  def deal_cards
+  def deal_cards          #======================================
     2.times {self.player.cards << deck.draw}
     2.times {self.dealer.cards << deck.draw}
 
     puts "Dealer card showing: #{dealer.cards[0].suit} #{dealer.cards[0].face} #{dealer.cards[0].value}"
   end
 
-  def determine_winner
-    show_dealer_hand
+  def player_wins         #======================================
+    puts "***you win * you win * you win * you win***"
+  end
 
-    if player.total == 21
-       puts "***you win * you win * you win * you win***"
-    elsif player.total < 21
+  def dealer_wins         #======================================
+    puts "      you lose to the dealer   "
+  end
 
-       if player.num_cards > 5
-          puts "***you win * you win * you win * you win 6 cards and under 21 ***"
+  def determine_winner   #======================================
+
+    # tie situation
+    if ( dealer.total > 21 and player.total > 21 ) || dealer.total == player.total
+       puts " Score tied, player number of cards:  #{player.num_cards} dealer:  #{dealer.num_cards}"
+       if player.total == 21
+         player_wins
        else
-          if dealer.total > 21
-             puts "***you win * you win * you win * you win***"
-          elsif
-            if player.total > dealer.total
-              puts "***you win * you win * you win * you win***"
-            elsif
-              puts "you lose, boo hoo"
-            end
-          end
+         if player.num_cards >= dealer.num_cards
+           player_wins
+         else
+           dealer_wins
+         end
        end
-    elsif player.total > 21
-      if dealer.total > 21
-        puts "you tied"
-      elsif
-        puts "you busted &*$^@(&%^#))"
-      end
     else
-      puts "it should be impossible for the code to get here"
+      if (player.total > dealer.total) && player.total < 22
+        player_wins
+      else
+        dealer_wins
+      end
     end
   end
 
-  def play
+
+  def play               #======================================
 # This was really confusing you so don't lose delete these comments!!!!!
   #  2.times do
   #    player_hand << deck.cards.shift
@@ -102,16 +104,20 @@ class BlackJack
 #if it is added with the += you get the values, not the array
 
     deal_cards
-
     if dealer.total == 21
-      puts "    dealer second card: #{dealer.cards[1].suit} #{dealer.cards[1].face} #{dealer.cards[1].value}"
       puts "Game Over, dealer received a natural 21"
     elsif
       hit?
       dealer_hit? if player.total < 21
     end
-
+    show_dealer_hand
     determine_winner
+    another_game?
+
+  end
+
+
+  def another_game?     #======================================
     desire = prompt.yes?("Would you like to play another game?")
     if desire
       BlackJack.new.play
@@ -120,6 +126,8 @@ class BlackJack
     end
   end
 
+
 end
+
 
 BlackJack.new.play

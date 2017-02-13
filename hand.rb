@@ -1,11 +1,10 @@
 
 class Hand
-  attr_accessor  :cards, :hand_total
+  attr_accessor  :cards
 
 
   def initialize
     self.cards = []
-    self.hand_total = 0
   end
 
 
