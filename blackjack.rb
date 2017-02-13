@@ -17,7 +17,7 @@ class BlackJack
   def hit?               #======================================
     show_hand
     desire = false
-    desire = prompt.yes?("Would you like another card?") if player.total <= 21
+    desire = prompt.yes?("Would you like another card?") if player.total < 21
     if desire
       player.cards << deck.draw
       hit?
@@ -26,16 +26,15 @@ class BlackJack
 
   def show_hand          #======================================
     puts "Your hand"
-    player.cards.each do |x|
-      puts "     #{x.suit} #{x.face} #{x.value}"
+    player.cards.each do |card|
+      puts "     #{card.suit} #{card.face}"
+      # From Demetra: Deleted x and replaced with 'card' so the method is easier to understand, deleted #{x.value} to make terminal output easier to read
     end
-
     puts "Current total for your hand #{player.total}"
-
   end
 
   def dealer_hit?        #======================================
-    if dealer.total <= 16
+    if dealer.total < 16
       dealer.cards << deck.draw
       dealer_hit?
     end
@@ -46,10 +45,9 @@ class BlackJack
     dealer_hit?
     puts "Dealer's Hand:"
 
-
-    dealer.cards.each do |x|
-      puts "     #{x.suit} #{x.face} #{x.value}"
-
+    dealer.cards.each do |card|
+      puts "     #{card.suit} #{card.face}"
+      # From Demetra: Deleted x and replaced with 'card' so the method is easier to understand, deleted #{x.value} to make terminal output easier to read
     end
     puts "Dealer Total: #{dealer.total}"
   end
@@ -58,7 +56,8 @@ class BlackJack
     2.times {self.player.cards << deck.draw}
     2.times {self.dealer.cards << deck.draw}
 
-    puts "Dealer card showing: #{dealer.cards[0].suit} #{dealer.cards[0].face} #{dealer.cards[0].value}"
+    puts "Dealer card showing: #{dealer.cards[0].suit} #{dealer.cards[0].face}"
+    # From Demetra: Deleted #{dealer.cards[0].value} to make it easier to read in terminal
   end
 
   def player_wins         #======================================
@@ -72,7 +71,8 @@ class BlackJack
   def determine_winner   #======================================
 
     # tie situation
-    if ( dealer.total > 21 and player.total > 21 ) || dealer.total == player.total
+    # From Demetra: I changed the following line using the new bust method I wrote - now the game will know what a bust is! In this case, you probably want to check that they both are NOT busted...but if you are using real life rules that may be different than what I am thinking of. Currently, this will check if they are both busted OR the totals are equal. What ends up happening is a player can bust, and then a dealer can also bust, and then the player and dealer show as 'tied' and the player wins. Game logic probably needs to be ironed out.
+    if (bust?(dealer) && bust?(player)) || dealer.total == player.total
        puts " Score tied, player number of cards:  #{player.num_cards} dealer:  #{dealer.num_cards}"
        if player.total == 21
          player_wins
@@ -92,6 +92,12 @@ class BlackJack
     end
   end
 
+  def bust?(hand)
+    hand.total > 21
+    # From Demetra: this will return true if a hand you pass in is over 21
+    # Consider using this to either initially check for a bust (when hands are first dealt) or to check for a bust during the player and dealer turns
+  end
+
 
   def play               #======================================
 # This was really confusing you so don't lose delete these comments!!!!!
@@ -106,7 +112,7 @@ class BlackJack
     deal_cards
     if dealer.total == 21
       puts "Game Over, dealer received a natural 21"
-    elsif
+    else
       hit?
       dealer_hit? if player.total < 21
     end
